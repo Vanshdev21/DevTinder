@@ -97,6 +97,18 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+userSchema.method.JWTToken = async function () {
+  const token = await jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d", // Token expiration time
+  });
+  return token;
+};
+
+userSchema.method.validatePassword = async function (password) {
+  const hashedPassword = await bcrypt.compare(password, this.password);
+  return hashedPassword;
+};
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

@@ -42,13 +42,11 @@ app.post("/api/login", async (req, res) => {
     if (!user) {
       return res.status(404).send("Invalid credentials");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
     console.log("isPasswordValid:", isPasswordValid);
     if (isPasswordValid) {
       // Create JWT token and send it in the response
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1d", // Token expiration time
-      });
+      const token = await user.JWTToken();
       // ADD token to cookies or headers for authentication in future requests
 
       res.cookie("token", token);
