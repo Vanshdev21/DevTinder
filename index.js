@@ -43,6 +43,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(404).send("Invalid credentials");
     }
     const isPasswordValid = await user.validatePassword(password);
+
     console.log("isPasswordValid:", isPasswordValid);
     if (isPasswordValid) {
       // Create JWT token and send it in the response
@@ -56,7 +57,8 @@ app.post("/api/login", async (req, res) => {
       throw new Error("Invalid credentials");
     }
   } catch (error) {
-    res.status(500).send("Something Went Wrong!!");
+    console.log("Error during login:", error);
+    res.status(500).send("Something Went Wrong!!", error);
   }
 });
 
@@ -65,7 +67,8 @@ app.get("/api/profile", userAuth, async (req, res) => {
     const user = req.user; // Access the authenticated user from the request
     res.status(200).send(user);
   } catch (error) {
-    res.status(500).send("Something Went Wrong!!");
+    console.log("Error fetching profile:", error);
+    res.status(500).send("Something Went Wrong!!", error);
   }
 });
 

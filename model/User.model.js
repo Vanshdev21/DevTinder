@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -97,14 +99,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-userSchema.method.JWTToken = async function () {
+userSchema.methods.JWTToken = async function () {
   const token = await jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1d", // Token expiration time
   });
   return token;
 };
 
-userSchema.method.validatePassword = async function (password) {
+userSchema.methods.validatePassword = async function (password) {
   const hashedPassword = await bcrypt.compare(password, this.password);
   return hashedPassword;
 };
